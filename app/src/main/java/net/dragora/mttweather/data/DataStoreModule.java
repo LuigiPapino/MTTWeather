@@ -2,7 +2,7 @@ package net.dragora.mttweather.data;
 
 import android.content.Context;
 
-import net.dragora.mttweather.data.stores.GitHubRepositorySearchStore;
+import net.dragora.mttweather.data.stores.CitySearchStore;
 import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 import net.dragora.mttweather.data.stores.StoreModule;
@@ -40,8 +40,8 @@ public final class DataStoreModule {
     }
 
     @Provides
-    public DataLayer.GetGitHubRepositorySearch provideGetGitHubRepositorySearch(DataLayer dataLayer) {
-        return dataLayer::fetchAndGetGitHubRepositorySearch;
+    public DataLayer.GetCitySearch provideGetGitHubRepositorySearch(DataLayer dataLayer) {
+        return dataLayer::fetchAndGetCitySearch;
     }
 
     @Provides
@@ -55,8 +55,8 @@ public final class DataStoreModule {
                                                  UserSettingsStore userSettingsStore,
                                                  NetworkRequestStatusStore networkRequestStatusStore,
                                                  GitHubRepositoryStore gitHubRepositoryStore,
-                                                 GitHubRepositorySearchStore gitHubRepositorySearchStore) {
-        return new DataLayer(context, userSettingsStore, networkRequestStatusStore, gitHubRepositoryStore, gitHubRepositorySearchStore);
+                                                 CitySearchStore citySearchStore) {
+        return new DataLayer(context, userSettingsStore, networkRequestStatusStore, gitHubRepositoryStore, citySearchStore);
     }
 
     @Provides
@@ -64,11 +64,11 @@ public final class DataStoreModule {
     public ServiceDataLayer provideServiceDataLayer(UriFetcherManager fetcherManager,
                                                     NetworkRequestStatusStore networkRequestStatusStore,
                                                     GitHubRepositoryStore gitHubRepositoryStore,
-                                                    GitHubRepositorySearchStore gitHubRepositorySearchStore) {
+                                                    CitySearchStore citySearchStore) {
         return new ServiceDataLayer(fetcherManager,
                                     networkRequestStatusStore,
                                     gitHubRepositoryStore,
-                                    gitHubRepositorySearchStore);
+                citySearchStore);
     }
 
 }

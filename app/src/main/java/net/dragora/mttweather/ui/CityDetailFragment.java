@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +26,13 @@ import org.androidannotations.annotations.ViewById;
  * on handsets.
  */
 @EFragment(R.layout.city_detail)
-public class CityDetailFragment extends Fragment {
+public class CityDetailFragment extends BaseFragment {
 
 
     @ViewById
     TextView cityDetail;
     @ViewById
-    CollapsingToolbarLayout toolbarLayout;
+    Toolbar detailToolbar;
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -68,8 +69,8 @@ public class CityDetailFragment extends Fragment {
     void afterViews() {
         if (mItem != null)
             cityDetail.setText(mItem.details);
-        if (toolbarLayout != null && mItem != null)
-            toolbarLayout.setTitle(mItem.content);
+        if (detailToolbar != null && mItem != null)
+            detailToolbar.setTitle(mItem.content);
     }
 
 }

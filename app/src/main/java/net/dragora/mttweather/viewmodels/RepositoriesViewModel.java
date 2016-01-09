@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import net.dragora.mttweather.data.DataLayer;
 import net.dragora.mttweather.pojo.GitHubRepository;
 import net.dragora.mttweather.pojo.GitHubRepositorySearch;
+import net.dragora.mttweather.pojo.search_city.SearchCity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,35 +28,39 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class RepositoriesViewModel extends AbstractViewModel {
     private static final String TAG = RepositoriesViewModel.class.getSimpleName();
-
-    public enum ProgressStatus {
-        LOADING, ERROR, IDLE
-    }
-
     private static final int MAX_REPOSITORIES_DISPLAYED = 5;
-
     @NonNull
-    private final DataLayer.GetGitHubRepositorySearch getGitHubRepositorySearch;
-
+    private final DataLayer.GetCitySearch getCitySearch;
     @NonNull
     private final DataLayer.GetGitHubRepository getGitHubRepository;
-
     private final PublishSubject<String> searchString = PublishSubject.create();
     private final PublishSubject<GitHubRepository> selectRepository = PublishSubject.create();
-
     private final BehaviorSubject<List<GitHubRepository>> repositories = BehaviorSubject.create();
     private final BehaviorSubject<ProgressStatus> networkRequestStatusText = BehaviorSubject.create();
 
-    public RepositoriesViewModel(@NonNull DataLayer.GetGitHubRepositorySearch getGitHubRepositorySearch,
+    public RepositoriesViewModel(@NonNull DataLayer.GetCitySearch getCitySearch,
                                  @NonNull DataLayer.GetGitHubRepository getGitHubRepository) {
-        Preconditions.checkNotNull(getGitHubRepositorySearch,
-                                   "GetGitHubRepositorySearch cannot be null.");
+        Preconditions.checkNotNull(getCitySearch,
+                "GetCitySearch cannot be null.");
         Preconditions.checkNotNull(getGitHubRepository,
                                    "GetGitHubRepository cannot be null.");
 
-        this.getGitHubRepositorySearch = getGitHubRepositorySearch;
+        this.getCitySearch = getCitySearch;
         this.getGitHubRepository = getGitHubRepository;
         Log.v(TAG, "RepositoriesViewModel");
+    }
+
+    @NonNull
+    static Func1<DataStreamNotification<SearchCity>, ProgressStatus> toProgressStatus() {
+        return notification -> {
+            if (notification.isFetchingStart()) {
+                return ProgressStatus.LOADING;
+            } else if (notification.isFetchingError()) {
+                return ProgressStatus.ERROR;
+            } else {
+                return ProgressStatus.IDLE;
+            }
+        };
     }
 
     @NonNull
@@ -85,41 +90,28 @@ public class RepositoriesViewModel extends AbstractViewModel {
         this.selectRepository.onNext(repository);
     }
 
-    @NonNull
-    static Func1<DataStreamNotification<GitHubRepositorySearch>, ProgressStatus> toProgressStatus() {
-        return notification -> {
-            if (notification.isFetchingStart()) {
-                return ProgressStatus.LOADING;
-            } else if (notification.isFetchingError()) {
-                return ProgressStatus.ERROR;
-            } else {
-                return ProgressStatus.IDLE;
-            }
-        };
-    }
-
     @Override
     public void subscribeToDataStoreInternal(@NonNull CompositeSubscription compositeSubscription) {
         Log.v(TAG, "subscribeToDataStoreInternal");
 
-        ConnectableObservable<DataStreamNotification<GitHubRepositorySearch>> repositorySearchSource =
+        ConnectableObservable<DataStreamNotification<SearchCity>> repositorySearchSource =
                 searchString
                           .filter((string) -> string.length() > 2)
                           .throttleLast(500, TimeUnit.MILLISECONDS)
-                          .switchMap(getGitHubRepositorySearch::call)
+                        .switchMap(getCitySearch::call)
                           .publish();
 
         compositeSubscription.add(repositorySearchSource
                 .map(toProgressStatus())
                 .subscribe(this::setNetworkStatusText));
 
-        compositeSubscription.add(repositorySearchSource
+/*     TODO    compositeSubscription.add(repositorySearchSource
                 .filter(DataStreamNotification::isOnNext)
                 .map(DataStreamNotification::getValue)
                 .map(GitHubRepositorySearch::getItems)
                 .flatMap(toGitHubRepositoryList())
                 .doOnNext(list -> Log.d(TAG, "Publishing " + list.size() + " repositories from the ViewModel"))
-                .subscribe(RepositoriesViewModel.this.repositories::onNext));
+                .subscribe(RepositoriesViewModel.this.repositories::onNext));*/
 
         compositeSubscription.add(repositorySearchSource.connect());
     }
@@ -146,5 +138,9 @@ public class RepositoriesViewModel extends AbstractViewModel {
         Preconditions.checkNotNull(status, "ProgressStatus cannot be null.");
 
         networkRequestStatusText.onNext(status);
+    }
+
+    public enum ProgressStatus {
+        LOADING, ERROR, IDLE
     }
 }

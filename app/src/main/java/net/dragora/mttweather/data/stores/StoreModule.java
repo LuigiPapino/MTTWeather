@@ -33,8 +33,8 @@ public final class StoreModule {
 
     @Provides
     @Singleton
-    public GitHubRepositorySearchStore provideGitHubRepositorySearchStore(ContentResolver contentResolver) {
-        return new GitHubRepositorySearchStore(contentResolver);
+    public CitySearchStore provideGitHubRepositorySearchStore(ContentResolver contentResolver) {
+        return new CitySearchStore(contentResolver);
     }
 
 }

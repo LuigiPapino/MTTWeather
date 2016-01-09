@@ -3,6 +3,7 @@ package net.dragora.mttweather.network;
 import android.support.annotation.NonNull;
 
 import net.dragora.mttweather.pojo.GitHubRepository;
+import net.dragora.mttweather.pojo.search_city.SearchCity;
 
 import java.util.List;
 import java.util.Map;
@@ -12,30 +13,30 @@ import retrofit.RestAdapter;
 import retrofit.client.Client;
 import rx.Observable;
 
-/**
- * Created by ttuo on 06/01/15.
- */
 public class NetworkApi {
 
-    private final GitHubService gitHubService;
-
+    private static final String API_KEY = "a8c96e6d726cb7bd73b867681ae88";
+    private final WeatherService weatherService;
     public NetworkApi(@NonNull Client client) {
         Preconditions.checkNotNull(client, "Client cannot be null.");
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setClient(client)
-                .setEndpoint("https://api.github.com")
-                .setLogLevel(RestAdapter.LogLevel.NONE)
+                .setEndpoint("http://api.worldweatheronline.com/premium/v1/")
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(request -> {
+                    request.addQueryParam("key", API_KEY);
+                    request.addQueryParam("format", "json");
+                })
                 .build();
-        gitHubService = restAdapter.create(GitHubService.class);
+        weatherService = restAdapter.create(WeatherService.class);
     }
 
-    public Observable<List<GitHubRepository>> search(Map<String, String> search) {
-        return gitHubService.search(search)
-                            .map(GitHubRepositorySearchResults::getItems);
+    public Observable<SearchCity> search(String query) {
+        return weatherService.search(query);
     }
 
     public Observable<GitHubRepository> getRepository(int id) {
-        return gitHubService.getRepository(id);
+        return weatherService.getRepository(id);
     }
 }

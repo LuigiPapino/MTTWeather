@@ -1,24 +1,33 @@
 package net.dragora.mttweather.ui;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-
+import net.dragora.mttweather.MyApplication;
 import net.dragora.mttweather.R;
+import net.dragora.mttweather.data.DataLayer;
 import net.dragora.mttweather.dummy.DummyContent;
+import net.dragora.mttweather.ui.search.SearchCityActivity_;
+import net.dragora.mttweather.ui.search.SearchCityFragment_;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
+
+import javax.inject.Inject;
+
+import io.reark.reark.utils.Log;
 
 /**
  * An activity representing a list of Cities. This activity
@@ -28,43 +37,49 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
+@EActivity(R.layout.city_list_activity)
 public class CityListActivity extends BaseActivity {
 
+    private static final String TAG = CityListActivity.class.getSimpleName();
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    AppBarLayout appBar;
+    @ViewById
+    RecyclerView cityList;
+    @ViewById
+    FrameLayout frameLayout, cityDetailContainer;
+
+    @ViewById
+    FloatingActionButton fab;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_city_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    @AfterViews
+    protected void afterViews() {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        View recyclerView = findViewById(R.id.city_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
-
-        if (findViewById(R.id.city_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
+        setupRecyclerView(cityList);
+        // The detail container view will be present only in the
+        // large-screen layouts (res/values-w900dp).
+        // If this view is present, then the
+        // activity should be in two-pane mode.
+        if (cityDetailContainer != null)
             mTwoPane = true;
-        }
+
+
+
+    }
+
+    @Click
+    protected void fab() {
+        SearchCityActivity_.intent(this)
+                .start();
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -97,19 +112,12 @@ public class CityListActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(CityDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        CityDetailFragment fragment = new CityDetailFragment();
-                        fragment.setArguments(arguments);
+                        CityDetailFragment fragment = CityDetailFragment_.builder().itemId(Integer.valueOf(holder.mItem.id)).build();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.city_detail_container, fragment)
                                 .commit();
                     } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, CityDetailActivity.class);
-                        intent.putExtra(CityDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        context.startActivity(intent);
+                        CityDetailActivity_.intent(CityListActivity.this).itemId(Integer.valueOf(holder.mItem.id)).start();
                     }
                 }
             });

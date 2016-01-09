@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
-import net.dragora.mttweather.data.schematicProvider.GitHubProvider;
+import net.dragora.mttweather.data.schematicProvider.WeatherProvider;
 import net.dragora.mttweather.data.schematicProvider.JsonIdColumns;
 import net.dragora.mttweather.data.schematicProvider.UserSettingsColumns;
 
@@ -38,7 +38,7 @@ public class NetworkRequestStatusStore extends SingleItemContentProviderStore<Ne
     @NonNull
     @Override
     public Uri getContentUri() {
-        return GitHubProvider.NetworkRequestStatuses.NETWORK_REQUEST_STATUSES;
+        return WeatherProvider.NetworkRequestStatuses.NETWORK_REQUEST_STATUSES;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class NetworkRequestStatusStore extends SingleItemContentProviderStore<Ne
     public Uri getUriForKey(@NonNull Integer id) {
         Preconditions.checkNotNull(id, "Id cannot be null.");
 
-        return GitHubProvider.NetworkRequestStatuses.withId(id);
+        return WeatherProvider.NetworkRequestStatuses.withId(id);
     }
 
     @Override

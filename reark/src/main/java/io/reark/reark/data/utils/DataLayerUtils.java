@@ -11,18 +11,20 @@ import rx.functions.Func1;
  * Created by ttuo on 06/05/15.
  */
 public class DataLayerUtils {
+    private static final String TAG = DataLayerUtils.class.getSimpleName();
+
     private DataLayerUtils() {
 
     }
 
     @NonNull
-    public static<T> Observable<DataStreamNotification<T>> createDataStreamNotificationObservable(
+    public static <T> Observable<DataStreamNotification<T>> createDataStreamNotificationObservable(
             @NonNull Observable<NetworkRequestStatus> networkRequestStatusObservable,
             @NonNull Observable<T> valueObservable) {
         final Observable<DataStreamNotification<T>> networkStatusStream =
                 networkRequestStatusObservable
-                        .filter(networkRequestStatus ->
-                                !networkRequestStatus.isCompleted())
+                        /*.filter(networkRequestStatus ->
+                                !networkRequestStatus.isCompleted())*/
                         .map(new Func1<NetworkRequestStatus, DataStreamNotification<T>>() {
                             @Override
                             public DataStreamNotification<T> call(NetworkRequestStatus networkRequestStatus) {
@@ -30,6 +32,8 @@ public class DataLayerUtils {
                                     return DataStreamNotification.fetchingError();
                                 } else if (networkRequestStatus.isOngoing()) {
                                     return DataStreamNotification.fetchingStart();
+                                } else if (networkRequestStatus.isCompleted()) {
+                                    return DataStreamNotification.noLoading();
                                 } else {
                                     return null;
                                 }

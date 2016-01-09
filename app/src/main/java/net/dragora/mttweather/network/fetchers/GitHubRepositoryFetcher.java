@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
-import net.dragora.mttweather.network.GitHubService;
+import net.dragora.mttweather.network.WeatherService;
 import net.dragora.mttweather.network.NetworkApi;
 import net.dragora.mttweather.pojo.GitHubRepository;
 
@@ -75,6 +75,6 @@ public class GitHubRepositoryFetcher extends AppFetcherBase {
     @NonNull
     @Override
     public Uri getServiceUri() {
-        return GitHubService.REPOSITORY;
+        return WeatherService.REPOSITORY;
     }
 }

@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
-import net.dragora.mttweather.data.schematicProvider.GitHubProvider;
+import net.dragora.mttweather.data.schematicProvider.WeatherProvider;
 import net.dragora.mttweather.data.schematicProvider.JsonIdColumns;
 import net.dragora.mttweather.data.schematicProvider.UserSettingsColumns;
 import net.dragora.mttweather.pojo.GitHubRepository;
@@ -38,7 +38,7 @@ public class GitHubRepositoryStore extends SingleItemContentProviderStore<GitHub
     @NonNull
     @Override
     public Uri getContentUri() {
-        return GitHubProvider.GitHubRepositories.GITHUB_REPOSITORIES;
+        return WeatherProvider.GitHubRepositories.GITHUB_REPOSITORIES;
     }
 
 
@@ -79,7 +79,7 @@ public class GitHubRepositoryStore extends SingleItemContentProviderStore<GitHub
     public Uri getUriForKey(@NonNull Integer id) {
         Preconditions.checkNotNull(id, "Id cannot be null.");
 
-        return GitHubProvider.GitHubRepositories.withId(id);
+        return WeatherProvider.GitHubRepositories.withId(id);
     }
 
     @Override

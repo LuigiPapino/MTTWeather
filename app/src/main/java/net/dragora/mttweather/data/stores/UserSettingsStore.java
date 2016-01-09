@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 
 import net.dragora.mttweather.data.DataLayer;
-import net.dragora.mttweather.data.schematicProvider.GitHubProvider;
+import net.dragora.mttweather.data.schematicProvider.WeatherProvider;
 import net.dragora.mttweather.data.schematicProvider.JsonIdColumns;
 import net.dragora.mttweather.data.schematicProvider.UserSettingsColumns;
 import net.dragora.mttweather.pojo.UserSettings;
@@ -40,7 +40,7 @@ public class UserSettingsStore extends SingleItemContentProviderStore<UserSettin
     @NonNull
     @Override
     public Uri getContentUri() {
-        return GitHubProvider.UserSettings.USER_SETTINGS;
+        return WeatherProvider.UserSettings.USER_SETTINGS;
     }
 
     private void initUserSettings() {
@@ -89,7 +89,7 @@ public class UserSettingsStore extends SingleItemContentProviderStore<UserSettin
     public Uri getUriForKey(@NonNull Integer id) {
         Preconditions.checkNotNull(id, "Id cannot be null.");
 
-        return GitHubProvider.UserSettings.withId(id);
+        return WeatherProvider.UserSettings.withId(id);
     }
 
     @Override

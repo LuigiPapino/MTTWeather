@@ -1,6 +1,6 @@
 package net.dragora.mttweather.network.fetchers;
 
-import net.dragora.mttweather.data.stores.GitHubRepositorySearchStore;
+import net.dragora.mttweather.data.stores.CitySearchStore;
 import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 import net.dragora.mttweather.network.NetworkApi;
@@ -33,20 +33,20 @@ public final class FetcherModule {
     }
 
     @Provides
-    @Named("gitHubRepositorySearch")
-    public Fetcher provideGitHubRepositorySearchFetcher(NetworkApi networkApi,
-                                                        NetworkRequestStatusStore networkRequestStatusStore,
-                                                        GitHubRepositoryStore gitHubRepositoryStore,
-                                                        GitHubRepositorySearchStore gitHubRepositorySearchStore) {
-        return new GitHubRepositorySearchFetcher(networkApi,
+    @Named("citySearch")
+    public Fetcher provideCitySearchFetcher(NetworkApi networkApi,
+                                            NetworkRequestStatusStore networkRequestStatusStore,
+                                            GitHubRepositoryStore gitHubRepositoryStore,
+                                            CitySearchStore citySearchStore) {
+        return new CitySearchFetcher(networkApi,
                                                  networkRequestStatusStore::put,
-                                                 gitHubRepositoryStore,
-                                                 gitHubRepositorySearchStore);
+
+                citySearchStore);
     }
 
     @Provides
     public UriFetcherManager provideUriFetcherManager(@Named("gitHubRepository")Fetcher gitHubRepositoryFetcher,
-                                                      @Named("gitHubRepositorySearch") Fetcher gitHubRepositorySearchFetcher) {
+                                                      @Named("citySearch") Fetcher gitHubRepositorySearchFetcher) {
         return new UriFetcherManager.Builder()
                 .fetchers(Arrays.asList(gitHubRepositoryFetcher, gitHubRepositorySearchFetcher))
                 .build();

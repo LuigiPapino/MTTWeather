@@ -1,5 +1,7 @@
 repositories {
     mavenCentral()
+    maven { url 'http://raw.github.com/wada811/Android-Material-Design-Colors/master/repository/' }
+
 }
 
 def AAVersion = '3.3.2'
@@ -87,6 +89,9 @@ dependencies {
     // Schematic
     apt 'net.simonvt.schematic:schematic-compiler:0.6.4'
     compile 'net.simonvt.schematic:schematic:0.6.4'
+    // Material Colors
+    compile 'com.wada811:android-material-design-colors:2.0.0'
+
 
     testCompile 'junit:junit:4.12'
 

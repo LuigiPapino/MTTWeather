@@ -13,9 +13,8 @@ import dagger.Provides;
 public class ViewModelModule {
 
     @Provides
-    public RepositoriesViewModel provideRepositoriesViewModel(DataLayer.GetGitHubRepositorySearch repositorySearch,
-                                                              DataLayer.GetGitHubRepository repositoryRepository) {
-        return new RepositoriesViewModel(repositorySearch, repositoryRepository);
+    public CitySearchViewModel provideCitySearchViewModel(DataLayer.GetCitySearch repositorySearch) {
+        return new CitySearchViewModel(repositorySearch);
     }
 
     @Provides

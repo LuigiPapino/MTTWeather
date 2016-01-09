@@ -3,14 +3,9 @@ package net.dragora.mttweather.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
 
 import net.dragora.mttweather.R;
 
@@ -27,19 +22,17 @@ import org.androidannotations.annotations.ViewById;
  * item details are presented side-by-side with a list of items
  * in a {@link CityListActivity}.
  */
-@EActivity(R.layout.activity_city_detail)
+@EActivity(R.layout.city_detail_activity)
 public class CityDetailActivity extends BaseActivity {
 
     @ViewById
     Toolbar detailToolbar;
-    @ViewById
-    CollapsingToolbarLayout toolbarLayout;
+
     @ViewById
     AppBarLayout appBar;
     @ViewById
     NestedScrollView cityDetailContainer;
-    @ViewById
-    FloatingActionButton fab;
+
 
     @Extra
     int itemId = -1;

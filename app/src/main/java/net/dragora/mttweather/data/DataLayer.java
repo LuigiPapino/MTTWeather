@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import net.dragora.mttweather.data.stores.GitHubRepositorySearchStore;
+import net.dragora.mttweather.data.stores.CitySearchStore;
 import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 import net.dragora.mttweather.data.stores.UserSettingsStore;
-import net.dragora.mttweather.network.GitHubService;
+import net.dragora.mttweather.network.WeatherService;
 import net.dragora.mttweather.network.NetworkService;
 import net.dragora.mttweather.pojo.GitHubRepository;
 import net.dragora.mttweather.pojo.GitHubRepositorySearch;
 import net.dragora.mttweather.pojo.UserSettings;
+import net.dragora.mttweather.pojo.search_city.SearchCity;
 
 import io.reark.reark.data.DataStreamNotification;
 import io.reark.reark.data.utils.DataLayerUtils;
@@ -26,17 +27,17 @@ import rx.Observable;
  * Created by ttuo on 19/03/14.
  */
 public class DataLayer extends DataLayerBase {
-    private static final String TAG = DataLayer.class.getSimpleName();
-    private final Context context;
-    protected final UserSettingsStore userSettingsStore;
     public static final int DEFAULT_USER_ID = 0;
+    private static final String TAG = DataLayer.class.getSimpleName();
+    protected final UserSettingsStore userSettingsStore;
+    private final Context context;
 
     public DataLayer(@NonNull Context context,
                      @NonNull UserSettingsStore userSettingsStore,
                      @NonNull NetworkRequestStatusStore networkRequestStatusStore,
                      @NonNull GitHubRepositoryStore gitHubRepositoryStore,
-                     @NonNull GitHubRepositorySearchStore gitHubRepositorySearchStore) {
-        super(networkRequestStatusStore, gitHubRepositoryStore, gitHubRepositorySearchStore);
+                     @NonNull CitySearchStore citySearchStore) {
+        super(networkRequestStatusStore, gitHubRepositoryStore, citySearchStore);
 
         Preconditions.checkNotNull(context, "Context cannot be null.");
         Preconditions.checkNotNull(userSettingsStore, "User Settings Store cannot be null.");
@@ -46,33 +47,33 @@ public class DataLayer extends DataLayerBase {
     }
 
     @NonNull
-    public Observable<DataStreamNotification<GitHubRepositorySearch>> getGitHubRepositorySearch(@NonNull final String searchString) {
+    public Observable<DataStreamNotification<SearchCity>> citySearch(@NonNull final String searchString) {
         Preconditions.checkNotNull(searchString, "Search string Store cannot be null.");
 
-        final Uri uri = gitHubRepositorySearchStore.getUriForKey(searchString);
+        final Uri uri = citySearchStore.getUriForKey(searchString);
         final Observable<NetworkRequestStatus> networkRequestStatusObservable =
                 networkRequestStatusStore.getStream(uri.toString().hashCode());
-        final Observable<GitHubRepositorySearch> gitHubRepositorySearchObservable =
-                gitHubRepositorySearchStore.getStream(searchString);
+        final Observable<SearchCity> citySearchObservable =
+                citySearchStore.getStream(searchString);
         return DataLayerUtils.createDataStreamNotificationObservable(
-                        networkRequestStatusObservable, gitHubRepositorySearchObservable);
+                networkRequestStatusObservable, citySearchObservable);
     }
 
     @NonNull
-    public Observable<DataStreamNotification<GitHubRepositorySearch>> fetchAndGetGitHubRepositorySearch(@NonNull final String searchString) {
+    public Observable<DataStreamNotification<SearchCity>> fetchAndGetCitySearch(@NonNull final String searchString) {
         Preconditions.checkNotNull(searchString, "Search string Store cannot be null.");
+        fetchCitySearch(searchString);
 
-        final Observable<DataStreamNotification<GitHubRepositorySearch>> gitHubRepositoryStream =
-                getGitHubRepositorySearch(searchString);
-        fetchGitHubRepositorySearch(searchString);
-        return gitHubRepositoryStream;
+        final Observable<DataStreamNotification<SearchCity>> citySearchStream =
+                citySearch(searchString);
+        return citySearchStream;
     }
 
-    private void fetchGitHubRepositorySearch(@NonNull final String searchString) {
+    private void fetchCitySearch(@NonNull final String searchString) {
         Preconditions.checkNotNull(searchString, "Search string Store cannot be null.");
 
         Intent intent = new Intent(context, NetworkService.class);
-        intent.putExtra("serviceUriString", GitHubService.REPOSITORY_SEARCH.toString());
+        intent.putExtra("serviceUriString", WeatherService.CITY_SEARCH.toString());
         intent.putExtra("searchString", searchString);
         context.startService(intent);
     }
@@ -94,7 +95,7 @@ public class DataLayer extends DataLayerBase {
 
     private void fetchGitHubRepository(@NonNull Integer repositoryId) {
         Intent intent = new Intent(context, NetworkService.class);
-        intent.putExtra("serviceUriString", GitHubService.REPOSITORY.toString());
+        intent.putExtra("serviceUriString", WeatherService.REPOSITORY.toString());
         intent.putExtra("id", repositoryId);
         context.startService(intent);
     }
@@ -128,8 +129,8 @@ public class DataLayer extends DataLayerBase {
 
     }
 
-    public interface GetGitHubRepositorySearch {
+    public interface GetCitySearch {
         @NonNull
-        Observable<DataStreamNotification<GitHubRepositorySearch>> call(@NonNull String search);
+        Observable<DataStreamNotification<SearchCity>> call(@NonNull String search);
     }
 }
