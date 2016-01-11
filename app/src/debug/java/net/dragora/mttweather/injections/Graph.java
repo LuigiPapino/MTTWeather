@@ -5,7 +5,8 @@ import android.app.Application;
 import net.dragora.mttweather.MyApplication;
 import net.dragora.mttweather.data.DataStoreModule;
 import net.dragora.mttweather.network.NetworkService;
-import net.dragora.mttweather.ui.CityListActivity;
+import net.dragora.mttweather.ui.city_list.CityListFragment;
+import net.dragora.mttweather.ui.city_weather.CityWeatherFragment;
 import net.dragora.mttweather.ui.search.SearchCityFragment;
 import net.dragora.mttweather.viewmodels.ViewModelModule;
 import net.dragora.mttweather.widget.WidgetService;
@@ -30,6 +31,10 @@ public interface Graph {
     void inject(WidgetService widgetService);
 
     void inject(SearchCityFragment searchCityFragment);
+
+    void inject(CityListFragment cityListFragment);
+
+    void inject(CityWeatherFragment cityWeatherFragment);
 
     final class Initializer {
 

@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import net.dragora.mttweather.data.DataLayerBase;
 import net.dragora.mttweather.data.stores.CitySearchStore;
-import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
+import net.dragora.mttweather.data.stores.CityWeatherStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 
 import io.reark.reark.network.fetchers.Fetcher;
@@ -25,9 +25,9 @@ public class ServiceDataLayer extends DataLayerBase {
 
     public ServiceDataLayer(@NonNull UriFetcherManager fetcherManager,
                             @NonNull NetworkRequestStatusStore networkRequestStatusStore,
-                            @NonNull GitHubRepositoryStore gitHubRepositoryStore,
+                            @NonNull CityWeatherStore cityWeatherStore,
                             @NonNull CitySearchStore citySearchStore) {
-        super(networkRequestStatusStore, gitHubRepositoryStore, citySearchStore);
+        super(networkRequestStatusStore, cityWeatherStore, citySearchStore);
 
         Preconditions.checkNotNull(fetcherManager,
                 "FetcherManager cannot be null.");

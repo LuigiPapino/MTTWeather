@@ -9,4 +9,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="padding_horizontal">16dp</dimen>
     <dimen name="padding_vertical">8dp</dimen>
+    <dimen name="chart_dots_radius">4dp</dimen>
+    <dimen name="chart_thick">3dp</dimen>
+    <dimen name="chart_dots_tick">1dp</dimen>
 </resources>

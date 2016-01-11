@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 
 import net.dragora.mttweather.MyApplication;
 import net.dragora.mttweather.R;
-import net.dragora.mttweather.pojo.search_city.SearchCity;
 import net.dragora.mttweather.ui.BaseFragment;
 import net.dragora.mttweather.utils.ApplicationInstrumentation;
 import net.dragora.mttweather.viewmodels.CitySearchViewModel;
@@ -32,12 +31,12 @@ public class SearchCityFragment extends BaseFragment {
     @Inject
     ApplicationInstrumentation mInstrumentation;
 
-    private SearchCityView.ViewBinder searchCityViewBinder;
+    private SearchCityView.SearchViewBinder searchCityViewBinder;
 
     @AfterViews
     protected void afterViews() {
         MyApplication.getInstance().getGraph().inject(this);
-        searchCityViewBinder = new SearchCityView.ViewBinder(searchCity, citySearchViewModel);
+        searchCityViewBinder = new SearchCityView.SearchViewBinder(searchCity, citySearchViewModel);
         citySearchViewModel.subscribeToDataStore();
     }
 

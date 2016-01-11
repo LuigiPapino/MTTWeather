@@ -13,14 +13,21 @@ import dagger.Provides;
 public class ViewModelModule {
 
     @Provides
-    public CitySearchViewModel provideCitySearchViewModel(DataLayer.GetCitySearch repositorySearch) {
-        return new CitySearchViewModel(repositorySearch);
+    public CitySearchViewModel provideCitySearchViewModel(DataLayer.GetCitySearch repositorySearch,
+                                                          DataLayer.GetUserSettings getUserSettings,
+                                                          DataLayer.SetUserSettings setUserSettings) {
+        return new CitySearchViewModel(repositorySearch, getUserSettings, setUserSettings);
     }
 
     @Provides
-    public RepositoryViewModel provideRepositoryViewModel(DataLayer.GetUserSettings getUserSettings,
-                                                          DataLayer.FetchAndGetGitHubRepository fetchAndGetGitHubRepository) {
-        return new RepositoryViewModel(getUserSettings, fetchAndGetGitHubRepository);
+    public CityListViewModel provideCityListViewModel(DataLayer.GetUserSettings getUserSettings,
+                                                      DataLayer.SetUserSettings setUserSettings) {
+        return new CityListViewModel(getUserSettings, setUserSettings);
+    }
+
+    @Provides
+    public WeatherViewModel provideWeatherViewModel(DataLayer.FetchAndGetWeather fetchAndGetGitHubRepository) {
+        return new WeatherViewModel(fetchAndGetGitHubRepository);
     }
 
 }

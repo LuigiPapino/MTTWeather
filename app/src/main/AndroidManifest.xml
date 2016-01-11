@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.CityListActivity_"
+            android:name=".ui.city_list.CityListActivity_"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,19 +22,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.CityDetailActivity_"
+            android:name=".ui.city_weather.CityWeatherActivity_"
             android:label="@string/title_city_detail"
-            android:parentActivityName=".ui.CityListActivity_"
+            android:parentActivityName=".ui.city_list.CityListActivity_"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.CityListActivity_" />
+                android:value=".ui.city_list.CityListActivity_" />
+        </activity>
+        <activity
+            android:name=".ui.search.SearchCityActivity_"
+            android:label="@string/title_activity_search_city"
+            android:parentActivityName=".ui.city_list.CityListActivity_"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.dragora.mttweather.ui.city_list.CityListActivity_" />
         </activity>
 
         <provider
             android:name=".data.schematicProvider.generated.WeatherProvider"
             android:authorities="net.dragora.mttweather.data.schematicProvider.WeatherProvider"
-            android:exported="false"></provider>
+            android:exported="false" />
 
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
@@ -51,15 +60,7 @@
             android:name=".network.NetworkService"
             android:process=":networkservice" />
 
-        <activity
-            android:name=".ui.search.SearchCityActivity_"
-            android:label="@string/title_activity_search_city"
-            android:parentActivityName=".ui.CityListActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.dragora.mttweather.ui.CityListActivity_" />
-        </activity>
+
     </application>
 
 </manifest>

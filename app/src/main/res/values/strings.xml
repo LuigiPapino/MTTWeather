@@ -8,4 +8,17 @@
     <string name="content_description">Description TODO</string>
     <string name="city_name">City Name</string>
     <string name="error_occured">Error occurred</string>
+
+    <string name="user_settings_init"><![CDATA[[{"areaName":[{"value":"Dublin"}],"country":[{"value":"Ireland"}],"longitude":"-6.249","region":[{"value":"Dublin"}],"weatherUrl":[{"value":"http://www.worldweatheronline.com/v2/weather.aspx?q\u003d53.3331,-6.2489"}],"population":1024027,"latitude":53.333},{"areaName":[{"value":"London"}],"country":[{"value":"United Kingdom"}],"longitude":"-0.106","region":[{"value":"City of London, Greater London"}],"weatherUrl":[{"value":"http://www.worldweatheronline.com/v2/weather.aspx?q\u003d51.5171,-0.1062"}],"population":7421228,"latitude":51.517},{"areaName":[{"value":"New York"}],"country":[{"value":"United States of America"}],"longitude":"-74.006","region":[{"value":"New York"}],"weatherUrl":[{"value":"http://www.worldweatheronline.com/v2/weather.aspx?q\u003d40.7142,-74.0064"}],"population":8107916,"latitude":40.714},{"areaName":[{"value":"Barcelona"}],"country":[{"value":"Spain"}],"longitude":"2.183","region":[{"value":"Catalonia"}],"weatherUrl":[{"value":"http://www.worldweatheronline.com/v2/weather.aspx?q\u003d41.3833,2.1833"}],"population":1570378,"latitude":41.383}]]]></string>
+    <string name="favorite_city_removed">%s unfavorited</string>
+    <string name="undo">Undo</string>
+    <string name="feels_like">Feels like: %s°C</string>
+    <string name="precipitations_mm">Precip: %.2fmm</string>
+    <string name="visibility">Visibility: %s</string>
+    <string name="humidity">Humidity: %s%%</string>
+    <string name="wind_speed">Wind: %skmph</string>
+    <string name="pressure">Pressure: %s</string>
+    <string name="ok">OK</string>
+    <string name="temp">%d°C</string>
+    <string name="city_weather">City Weather</string>
 </resources>

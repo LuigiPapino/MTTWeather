@@ -6,26 +6,25 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import net.dragora.mttweather.data.stores.CitySearchStore;
-import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
+import net.dragora.mttweather.data.stores.CityWeatherStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 import net.dragora.mttweather.data.stores.UserSettingsStore;
 import net.dragora.mttweather.network.WeatherService;
 import net.dragora.mttweather.network.NetworkService;
-import net.dragora.mttweather.pojo.GitHubRepository;
-import net.dragora.mttweather.pojo.GitHubRepositorySearch;
 import net.dragora.mttweather.pojo.UserSettings;
 import net.dragora.mttweather.pojo.search_city.SearchCity;
+import net.dragora.mttweather.pojo.weather.CityWeather;
+import net.dragora.mttweather.pojo.weather.Weather;
 
 import io.reark.reark.data.DataStreamNotification;
 import io.reark.reark.data.utils.DataLayerUtils;
 import io.reark.reark.pojo.NetworkRequestStatus;
 import io.reark.reark.utils.Preconditions;
+import jonathanfinerty.once.Once;
 import rx.Observable;
 
 
-/**
- * Created by ttuo on 19/03/14.
- */
+
 public class DataLayer extends DataLayerBase {
     public static final int DEFAULT_USER_ID = 0;
     private static final String TAG = DataLayer.class.getSimpleName();
@@ -35,15 +34,21 @@ public class DataLayer extends DataLayerBase {
     public DataLayer(@NonNull Context context,
                      @NonNull UserSettingsStore userSettingsStore,
                      @NonNull NetworkRequestStatusStore networkRequestStatusStore,
-                     @NonNull GitHubRepositoryStore gitHubRepositoryStore,
+                     @NonNull CityWeatherStore cityWeatherStore,
                      @NonNull CitySearchStore citySearchStore) {
-        super(networkRequestStatusStore, gitHubRepositoryStore, citySearchStore);
+        super(networkRequestStatusStore, cityWeatherStore, citySearchStore);
 
         Preconditions.checkNotNull(context, "Context cannot be null.");
         Preconditions.checkNotNull(userSettingsStore, "User Settings Store cannot be null.");
 
         this.context = context;
         this.userSettingsStore = userSettingsStore;
+
+        if (!Once.beenDone(Once.THIS_APP_INSTALL, "user_settings_init")) {
+            Once.markDone("user_settings_init");
+            UserSettings userSettings = UserSettings.init(context);
+            setUserSettings(userSettings);
+        }
     }
 
     @NonNull
@@ -79,24 +84,29 @@ public class DataLayer extends DataLayerBase {
     }
 
     @NonNull
-    public Observable<GitHubRepository> getGitHubRepository(@NonNull Integer repositoryId) {
-        Preconditions.checkNotNull(repositoryId, "Repository Id cannot be null.");
-
-        return gitHubRepositoryStore.getStream(repositoryId);
+    public Observable<DataStreamNotification<CityWeather>> getWeather(@NonNull String id) {
+        Preconditions.checkNotNull(id, "Id cannot be null.");
+        final Uri uri = cityWeatherStore.getUriForKey(id);
+        final Observable<NetworkRequestStatus> networkRequestStatusObservable =
+                networkRequestStatusStore.getStream(uri.toString().hashCode());
+        final Observable<CityWeather> cityWeatherObservable =
+                cityWeatherStore.getStream(id);
+        return DataLayerUtils.createDataStreamNotificationObservable(
+                networkRequestStatusObservable, cityWeatherObservable);
     }
 
     @NonNull
-    public Observable<GitHubRepository> fetchAndGetGitHubRepository(@NonNull Integer repositoryId) {
-        Preconditions.checkNotNull(repositoryId, "Repository Id cannot be null.");
+    public Observable<DataStreamNotification<CityWeather>> fetchAndGetWeather(@NonNull String id) {
+        Preconditions.checkNotNull(id, "Id cannot be null.");
 
-        fetchGitHubRepository(repositoryId);
-        return getGitHubRepository(repositoryId);
+        fetchWeather(id);
+        return getWeather(id);
     }
 
-    private void fetchGitHubRepository(@NonNull Integer repositoryId) {
+    private void fetchWeather(@NonNull String id) {
         Intent intent = new Intent(context, NetworkService.class);
-        intent.putExtra("serviceUriString", WeatherService.REPOSITORY.toString());
-        intent.putExtra("id", repositoryId);
+        intent.putExtra("serviceUriString", WeatherService.CITY_WEATHER.toString());
+        intent.putExtra("id", id);
         context.startService(intent);
     }
 
@@ -120,12 +130,12 @@ public class DataLayer extends DataLayerBase {
         void call(@NonNull UserSettings userSettings);
     }
 
-    public interface GetGitHubRepository {
+    public interface GetWeather {
         @NonNull
-        Observable<GitHubRepository> call(int repositoryId);
+        Observable<DataStreamNotification<CityWeather>> call(@NonNull String id);
     }
 
-    public interface FetchAndGetGitHubRepository extends GetGitHubRepository {
+    public interface FetchAndGetWeather extends GetWeather {
 
     }
 

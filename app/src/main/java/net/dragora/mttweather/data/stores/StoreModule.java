@@ -27,8 +27,8 @@ public final class StoreModule {
 
     @Provides
     @Singleton
-    public GitHubRepositoryStore provideGitHubRepositoryStore(ContentResolver contentResolver) {
-        return new GitHubRepositoryStore(contentResolver);
+    public CityWeatherStore provideGitHubRepositoryStore(ContentResolver contentResolver) {
+        return new CityWeatherStore(contentResolver);
     }
 
     @Provides

@@ -2,55 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/padding_horizontal"
-    android:paddingRight="@dimen/padding_horizontal"
-    android:paddingTop="@dimen/padding_vertical">
+    android:layout_marginLeft="@dimen/padding_horizontal"
+    android:layout_marginRight="@dimen/padding_horizontal">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/search_input"
-        android:layout_alignLeft="@+id/image_status_error"
-        android:layout_alignParentRight="true"
-        android:layout_alignRight="@+id/image_status_error"
-        android:layout_alignTop="@+id/search_input"
-        android:indeterminate="true"
-        android:padding="4dp"
-        android:visibility="invisible" />
-
-    <ImageView
-        android:id="@+id/image_status_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/search_input"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/search_input"
-        android:src="@drawable/ic_error_black_36dp"
-        android:tint="@color/md_red_500"
-        android:visibility="invisible" />
-
-    <EditText
-        android:id="@+id/search_input"
+    <RelativeLayout
+        android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/image_status_error"
-        android:hint="@string/city_name"
-        android:inputType="textFilter" />
+        android:layout_marginTop="@dimen/padding_vertical">
 
-    <TextView
-        android:id="@+id/status_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_input"
-        android:layout_marginTop="8dp" />
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/search_input"
+            android:layout_alignLeft="@+id/image_status_error"
+            android:layout_alignParentRight="true"
+            android:layout_alignRight="@+id/image_status_error"
+            android:layout_alignTop="@+id/search_input"
+            android:indeterminate="true"
+            android:padding="4dp"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/image_status_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/search_input"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/search_input"
+            android:src="@drawable/ic_error_black_36dp"
+            android:tint="@color/md_red_500"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/image_status_error"
+            android:hint="@string/city_name"
+            android:inputType="textFilter" />
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/search_input"
+            android:layout_marginTop="8dp" />
+    </RelativeLayout>
 
     <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
         android:id="@+id/ultimate_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/status_text"
-        android:layout_marginTop="8dp" />
+        android:layout_below="@id/search_layout" />
 
 
 </RelativeLayout>

@@ -8,17 +8,22 @@ import net.dragora.mttweather.utils.ApplicationInstrumentation;
 
 import javax.inject.Inject;
 
+import jonathanfinerty.once.Once;
+
 /**
  * Created by nietzsche on 06/01/16.
  */
 public class MyApplication extends Application {
 
     private static MyApplication instance;
-
-    private Graph mGraph;
-
     @Inject
     ApplicationInstrumentation instrumentation;
+    private Graph mGraph;
+
+    @NonNull
+    public static MyApplication getInstance() {
+        return instance;
+    }
 
     @Override
     public void onCreate() {
@@ -28,11 +33,7 @@ public class MyApplication extends Application {
         getGraph().inject(this);
 
         instrumentation.init();
-    }
-
-    @NonNull
-    public static MyApplication getInstance() {
-        return instance;
+        Once.initialise(this);
     }
 
     @NonNull

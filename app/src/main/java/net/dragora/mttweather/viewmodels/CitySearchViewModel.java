@@ -3,7 +3,7 @@ package net.dragora.mttweather.viewmodels;
 import android.support.annotation.NonNull;
 
 import net.dragora.mttweather.data.DataLayer;
-import net.dragora.mttweather.pojo.GitHubRepository;
+import net.dragora.mttweather.pojo.UserSettings;
 import net.dragora.mttweather.pojo.search_city.Result;
 import net.dragora.mttweather.pojo.search_city.SearchCity;
 
@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import io.reark.reark.data.DataStreamNotification;
 import io.reark.reark.utils.Log;
 import io.reark.reark.utils.Preconditions;
-import io.reark.reark.utils.RxUtils;
 import io.reark.reark.viewmodels.AbstractViewModel;
 import rx.Observable;
 import rx.functions.Func1;
@@ -22,24 +21,33 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
-/**
- * Created by ttuo on 19/03/14.
- */
+
 public class CitySearchViewModel extends AbstractViewModel {
     private static final String TAG = CitySearchViewModel.class.getSimpleName();
-    @NonNull
     private final DataLayer.GetCitySearch getCitySearch;
+    private final DataLayer.GetUserSettings getUserSettings;
+    private final DataLayer.SetUserSettings setUserSettings;
+
     private final PublishSubject<String> searchString = PublishSubject.create();
-    private final PublishSubject<GitHubRepository> selectRepository = PublishSubject.create();
+    private final PublishSubject<UserSettings> userSettingsPublishSubject = PublishSubject.create();
     private final BehaviorSubject<List<Result>> results = BehaviorSubject.create();
     private final BehaviorSubject<ProgressStatus> networkRequestStatusText = BehaviorSubject.create();
 
-    public CitySearchViewModel(@NonNull DataLayer.GetCitySearch getCitySearch
+    private BehaviorSubject<UserSettings> userSettings = BehaviorSubject.create();
+
+    public CitySearchViewModel(@NonNull DataLayer.GetCitySearch getCitySearch,
+                               @NonNull DataLayer.GetUserSettings getUserSettings,
+                               @NonNull DataLayer.SetUserSettings setUserSettings
     ) {
         Preconditions.checkNotNull(getCitySearch,
                 "GetCitySearch cannot be null.");
-
+        Preconditions.checkNotNull(getUserSettings,
+                "getUserSettings cannot be null.");
+        Preconditions.checkNotNull(setUserSettings,
+                "setUserSettings cannot be null.");
         this.getCitySearch = getCitySearch;
+        this.getUserSettings = getUserSettings;
+        this.setUserSettings = setUserSettings;
 
         Log.v(TAG, "RepositoriesViewModel");
     }
@@ -60,14 +68,21 @@ public class CitySearchViewModel extends AbstractViewModel {
         };
     }
 
-    @NonNull
-    public Observable<GitHubRepository> getSelectRepository() {
-        return selectRepository.asObservable();
-    }
 
     @NonNull
     public Observable<List<Result>> getResults() {
         return results.asObservable();
+    }
+
+
+    @NonNull
+    public PublishSubject<UserSettings> getUserSettingsPublishSubject() {
+        return userSettingsPublishSubject;
+    }
+
+    @NonNull
+    public Observable<UserSettings> getUserSettings() {
+        return userSettings.asObservable();
     }
 
     @NonNull
@@ -81,11 +96,6 @@ public class CitySearchViewModel extends AbstractViewModel {
         this.searchString.onNext(searchString);
     }
 
-    public void selectRepository(@NonNull GitHubRepository repository) {
-        Preconditions.checkNotNull(repository, "Repository cannot be null.");
-
-        this.selectRepository.onNext(repository);
-    }
 
     @Override
     public void subscribeToDataStoreInternal(@NonNull CompositeSubscription compositeSubscription) {
@@ -94,7 +104,7 @@ public class CitySearchViewModel extends AbstractViewModel {
         ConnectableObservable<DataStreamNotification<SearchCity>> citySearchSource =
                 searchString
                         .filter((string) -> string.length() > 2)
-                        .throttleLast(500, TimeUnit.MILLISECONDS)
+                        .throttleLast(500, TimeUnit.MILLISECONDS) //TODO hard to test
                         .switchMap(getCitySearch::call)
                         .publish();
 
@@ -110,6 +120,13 @@ public class CitySearchViewModel extends AbstractViewModel {
                 .subscribe(CitySearchViewModel.this.results::onNext));
 
         compositeSubscription.add(citySearchSource.connect());
+
+        compositeSubscription.add(getUserSettings.call()
+                .subscribe(CitySearchViewModel.this.userSettings::onNext));
+
+        compositeSubscription.add(userSettingsPublishSubject.subscribe(
+                setUserSettings::call
+        ));
     }
 
     void setNetworkStatusText(@NonNull ProgressStatus status) {

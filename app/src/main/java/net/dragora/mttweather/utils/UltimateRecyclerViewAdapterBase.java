@@ -60,4 +60,8 @@ public abstract class UltimateRecyclerViewAdapterBase<T, V extends View> extends
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
 
     }
+
+    public List<T> getItems() {
+        return items;
+    }
 }

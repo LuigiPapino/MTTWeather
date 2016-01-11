@@ -30,6 +30,22 @@ public class Region implements Parcelable {
         mValue = in.readString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Region region = (Region) o;
+
+        return mValue != null ? mValue.equals(region.mValue) : region.mValue == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return mValue != null ? mValue.hashCode() : 0;
+    }
+
     public String getValue() {
         return mValue;
     }

@@ -15,7 +15,9 @@ import net.dragora.mttweather.pojo.search_city.SearchCity;
 import io.reark.reark.data.store.SingleItemContentProviderStore;
 import io.reark.reark.utils.Preconditions;
 
-
+/**
+ * Created by nietzsche
+ */
 public class CitySearchStore extends SingleItemContentProviderStore<SearchCity, String> {
     private static final String TAG = CitySearchStore.class.getSimpleName();
 

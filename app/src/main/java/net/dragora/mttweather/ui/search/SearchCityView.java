@@ -13,10 +13,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.annimon.stream.Stream;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import net.dragora.mttweather.R;
+import net.dragora.mttweather.pojo.UserSettings;
 import net.dragora.mttweather.pojo.search_city.Result;
+import net.dragora.mttweather.viewmodels.CityListViewModel;
 import net.dragora.mttweather.viewmodels.CitySearchViewModel;
 
 import org.androidannotations.annotations.AfterViews;
@@ -24,6 +27,8 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reark.reark.utils.Preconditions;
@@ -39,7 +44,6 @@ import rx.subscriptions.CompositeSubscription;
 @EViewGroup(R.layout.search_city_view)
 public class SearchCityView extends RelativeLayout {
 
-
     private static final String TAG = SearchCityView.class.getSimpleName();
     @ViewById
     EditText searchInput;
@@ -51,6 +55,8 @@ public class SearchCityView extends RelativeLayout {
     ProgressBar progressBar;
     @ViewById
     ImageView imageStatusError;
+    @ViewById
+    RelativeLayout searchLayout;
 
 
     @Bean
@@ -131,12 +137,16 @@ public class SearchCityView extends RelativeLayout {
         adapter.setItems(results);
     }
 
-    public static class ViewBinder extends RxViewBinder {
+    private void setUserSettings(@NonNull UserSettings userSettings) {
+        adapter.setUserSettings(userSettings);
+    }
+
+    public static class SearchViewBinder extends RxViewBinder {
         private SearchCityView view;
         private CitySearchViewModel viewModel;
 
-        public ViewBinder(@NonNull final SearchCityView view,
-                          @NonNull final CitySearchViewModel viewModel) {
+        public SearchViewBinder(@NonNull final SearchCityView view,
+                                @NonNull final CitySearchViewModel viewModel) {
             Preconditions.checkNotNull(view, "View cannot be null.");
             Preconditions.checkNotNull(viewModel, "ViewModel cannot be null.");
 
@@ -146,6 +156,8 @@ public class SearchCityView extends RelativeLayout {
 
         @Override
         protected void bindInternal(@NonNull final CompositeSubscription s) {
+            view.adapter.setShowUndo(false);
+            view.adapter.setClickable(false);
             s.add(viewModel.getResults()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(view::setResults));
@@ -155,7 +167,44 @@ public class SearchCityView extends RelativeLayout {
             s.add(view.searchStringObservable
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(viewModel::setSearchString));
+            s.add(viewModel.getUserSettings()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(view::setUserSettings));
 
+            view.adapter.setUserSettingsPublishSubject(viewModel.getUserSettingsPublishSubject());
+
+        }
+
+    }
+
+    public static class ListViewBinder extends RxViewBinder {
+        private SearchCityView view;
+        private CityListViewModel viewModel;
+
+        public ListViewBinder(@NonNull final SearchCityView view,
+                              @NonNull final CityListViewModel viewModel) {
+            Preconditions.checkNotNull(view, "View cannot be null.");
+            Preconditions.checkNotNull(viewModel, "ViewModel cannot be null.");
+
+            this.view = view;
+            this.viewModel = viewModel;
+        }
+
+        @Override
+        protected void bindInternal(@NonNull final CompositeSubscription s) {
+            view.adapter.setShowUndo(true);
+            view.adapter.setClickable(true);
+
+            s.add(viewModel.getUserSettings()
+                    .map(UserSettings::getFavoriteCityResults)
+                    .map(ArrayList::new)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(view::setResults));
+            s.add(viewModel.getUserSettings()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(view::setUserSettings));
+            view.adapter.setUserSettingsPublishSubject(viewModel.getUserSettingsPublishSubject());
+            view.searchLayout.setVisibility(GONE);
         }
 
     }

@@ -1,7 +1,7 @@
 package net.dragora.mttweather.network.fetchers;
 
 import net.dragora.mttweather.data.stores.CitySearchStore;
-import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
+import net.dragora.mttweather.data.stores.CityWeatherStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 import net.dragora.mttweather.network.NetworkApi;
 import net.dragora.mttweather.network.NetworkModule;
@@ -23,20 +23,20 @@ import io.reark.reark.network.fetchers.UriFetcherManager;
 public final class FetcherModule {
 
     @Provides
-    @Named("gitHubRepository")
-    public Fetcher provideGitHubRepositoryFetcher(NetworkApi networkApi,
-                                                  NetworkRequestStatusStore networkRequestStatusStore,
-                                                  GitHubRepositoryStore gitHubRepositoryStore) {
-        return new GitHubRepositoryFetcher(networkApi,
+    @Named("cityWeather")
+    public Fetcher provideWeatherFetcher(NetworkApi networkApi,
+                                         NetworkRequestStatusStore networkRequestStatusStore,
+                                         CityWeatherStore cityWeatherStore) {
+        return new CityWeatherFetcher(networkApi,
                                            networkRequestStatusStore::put,
-                                           gitHubRepositoryStore);
+                cityWeatherStore);
     }
 
     @Provides
     @Named("citySearch")
     public Fetcher provideCitySearchFetcher(NetworkApi networkApi,
                                             NetworkRequestStatusStore networkRequestStatusStore,
-                                            GitHubRepositoryStore gitHubRepositoryStore,
+                                            CityWeatherStore cityWeatherStore,
                                             CitySearchStore citySearchStore) {
         return new CitySearchFetcher(networkApi,
                                                  networkRequestStatusStore::put,
@@ -45,10 +45,10 @@ public final class FetcherModule {
     }
 
     @Provides
-    public UriFetcherManager provideUriFetcherManager(@Named("gitHubRepository")Fetcher gitHubRepositoryFetcher,
-                                                      @Named("citySearch") Fetcher gitHubRepositorySearchFetcher) {
+    public UriFetcherManager provideUriFetcherManager(@Named("cityWeather") Fetcher cityWeatherFetcher,
+                                                      @Named("citySearch") Fetcher citySearchFetcher) {
         return new UriFetcherManager.Builder()
-                .fetchers(Arrays.asList(gitHubRepositoryFetcher, gitHubRepositorySearchFetcher))
+                .fetchers(Arrays.asList(cityWeatherFetcher, citySearchFetcher))
                 .build();
     }
 }

@@ -3,7 +3,7 @@ package net.dragora.mttweather.data;
 import android.content.Context;
 
 import net.dragora.mttweather.data.stores.CitySearchStore;
-import net.dragora.mttweather.data.stores.GitHubRepositoryStore;
+import net.dragora.mttweather.data.stores.CityWeatherStore;
 import net.dragora.mttweather.data.stores.NetworkRequestStatusStore;
 import net.dragora.mttweather.data.stores.StoreModule;
 import net.dragora.mttweather.data.stores.UserSettingsStore;
@@ -18,9 +18,6 @@ import dagger.Provides;
 import io.reark.reark.network.fetchers.UriFetcherManager;
 
 
-/**
- * Created by pt2121 on 2/20/15.
- */
 @Module(includes = { FetcherModule.class, StoreModule.class })
 public final class DataStoreModule {
 
@@ -35,18 +32,18 @@ public final class DataStoreModule {
     }
 
     @Provides
-    public DataLayer.FetchAndGetGitHubRepository provideFetchAndGetGitHubRepository(DataLayer dataLayer) {
-        return dataLayer::fetchAndGetGitHubRepository;
+    public DataLayer.FetchAndGetWeather provideFetchAndGetWeather(DataLayer dataLayer) {
+        return dataLayer::fetchAndGetWeather;
     }
 
     @Provides
-    public DataLayer.GetCitySearch provideGetGitHubRepositorySearch(DataLayer dataLayer) {
+    public DataLayer.GetCitySearch provideGetCitySearch(DataLayer dataLayer) {
         return dataLayer::fetchAndGetCitySearch;
     }
 
     @Provides
-    public DataLayer.GetGitHubRepository provideGetGitHubRepository(DataLayer dataLayer) {
-        return dataLayer::getGitHubRepository;
+    public DataLayer.GetWeather provideGetWeather(DataLayer dataLayer) {
+        return dataLayer::getWeather;
     }
 
     @Provides
@@ -54,20 +51,20 @@ public final class DataStoreModule {
     public DataLayer provideApplicationDataLayer(@ForApplication Context context,
                                                  UserSettingsStore userSettingsStore,
                                                  NetworkRequestStatusStore networkRequestStatusStore,
-                                                 GitHubRepositoryStore gitHubRepositoryStore,
+                                                 CityWeatherStore cityWeatherStore,
                                                  CitySearchStore citySearchStore) {
-        return new DataLayer(context, userSettingsStore, networkRequestStatusStore, gitHubRepositoryStore, citySearchStore);
+        return new DataLayer(context, userSettingsStore, networkRequestStatusStore, cityWeatherStore, citySearchStore);
     }
 
     @Provides
     @Singleton
     public ServiceDataLayer provideServiceDataLayer(UriFetcherManager fetcherManager,
                                                     NetworkRequestStatusStore networkRequestStatusStore,
-                                                    GitHubRepositoryStore gitHubRepositoryStore,
+                                                    CityWeatherStore cityWeatherStore,
                                                     CitySearchStore citySearchStore) {
         return new ServiceDataLayer(fetcherManager,
                                     networkRequestStatusStore,
-                                    gitHubRepositoryStore,
+                cityWeatherStore,
                 citySearchStore);
     }
 

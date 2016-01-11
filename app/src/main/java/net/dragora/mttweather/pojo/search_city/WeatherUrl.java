@@ -30,6 +30,22 @@ public class WeatherUrl implements Parcelable {
         mValue = in.readString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WeatherUrl that = (WeatherUrl) o;
+
+        return mValue != null ? mValue.equals(that.mValue) : that.mValue == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return mValue != null ? mValue.hashCode() : 0;
+    }
+
     public String getValue() {
         return mValue;
     }

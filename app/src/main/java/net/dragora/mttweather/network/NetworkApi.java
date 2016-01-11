@@ -2,11 +2,9 @@ package net.dragora.mttweather.network;
 
 import android.support.annotation.NonNull;
 
-import net.dragora.mttweather.pojo.GitHubRepository;
 import net.dragora.mttweather.pojo.search_city.SearchCity;
-
-import java.util.List;
-import java.util.Map;
+import net.dragora.mttweather.pojo.weather.CityWeather;
+import net.dragora.mttweather.pojo.weather.Weather;
 
 import io.reark.reark.utils.Preconditions;
 import retrofit.RestAdapter;
@@ -36,7 +34,7 @@ public class NetworkApi {
         return weatherService.search(query);
     }
 
-    public Observable<GitHubRepository> getRepository(int id) {
-        return weatherService.getRepository(id);
+    public Observable<CityWeather> getWeather(String id) {
+        return weatherService.weather(id, 7, "no", "yes");
     }
 }

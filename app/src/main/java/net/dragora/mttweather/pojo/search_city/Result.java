@@ -9,10 +9,11 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 
-public class Result implements Parcelable {
+public class Result implements Parcelable, Comparable<Result> {
 
     public static final Parcelable.Creator<Result> CREATOR = new Parcelable.Creator<Result>() {
         public Result createFromParcel(Parcel in) {
@@ -41,7 +42,7 @@ public class Result implements Parcelable {
     @SerializedName(FIELD_LONGITUDE)
     private String mLongitude;
     @SerializedName(FIELD_LATITUDE)
-    private double mLatitude;
+    private String mLatitude;
     @SerializedName(FIELD_WEATHER_URL)
     private List<WeatherUrl> mWeatherUrls;
 
@@ -58,9 +59,50 @@ public class Result implements Parcelable {
         mRegions = new ArrayList<Region>();
         in.readTypedList(mRegions, Region.CREATOR);
         mLongitude = in.readString();
-        mLatitude = in.readDouble();
+        mLatitude = in.readString();
         mWeatherUrls = new ArrayList<WeatherUrl>();
         in.readTypedList(mWeatherUrls, WeatherUrl.CREATOR);
+    }
+
+    public String getWeatherId() {
+        return String.format("%s,%s", getLatitude(), getLongitude());
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Result result = (Result) o;
+
+        if (mPopulation != result.mPopulation) return false;
+        if (mLatitude != null ? !mLatitude.equals(result.mLatitude) : result.mLatitude != null)
+            return false;
+        if (mAreaNames != null ? !mAreaNames.equals(result.mAreaNames) : result.mAreaNames != null)
+            return false;
+        if (mCountries != null ? !mCountries.equals(result.mCountries) : result.mCountries != null)
+            return false;
+        if (mRegions != null ? !mRegions.equals(result.mRegions) : result.mRegions != null)
+            return false;
+        if (mLongitude != null ? !mLongitude.equals(result.mLongitude) : result.mLongitude != null)
+            return false;
+        return mWeatherUrls != null ? mWeatherUrls.equals(result.mWeatherUrls) : result.mWeatherUrls == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = mAreaNames != null ? mAreaNames.hashCode() : 0;
+        result = 31 * result + (mCountries != null ? mCountries.hashCode() : 0);
+        result = 31 * result + mPopulation;
+        result = 31 * result + (mRegions != null ? mRegions.hashCode() : 0);
+        result = 31 * result + (mLongitude != null ? mLongitude.hashCode() : 0);
+        result = 31 * result + (mLatitude != null ? mLatitude.hashCode() : 0);
+        result = 31 * result + (mWeatherUrls != null ? mWeatherUrls.hashCode() : 0);
+        return result;
     }
 
     public List<AreaName> getAreaNames() {
@@ -103,11 +145,11 @@ public class Result implements Parcelable {
         mLongitude = longitude;
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return mLatitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         mLatitude = latitude;
     }
 
@@ -131,7 +173,7 @@ public class Result implements Parcelable {
         dest.writeInt(mPopulation);
         dest.writeTypedList(mRegions);
         dest.writeString(mLongitude);
-        dest.writeDouble(mLatitude);
+        dest.writeString(mLatitude);
         dest.writeTypedList(mWeatherUrls);
     }
 
@@ -141,6 +183,7 @@ public class Result implements Parcelable {
     }
 
 
+    @NonNull
     public String getFirstAreaName() {
         String result = "";
         if (getAreaNames() != null && !getAreaNames().isEmpty())
@@ -165,4 +208,9 @@ public class Result implements Parcelable {
         return TextUtils.isEmpty(result) ? "" : result;
     }
 
+    @Override
+    public int compareTo(Result another) {
+
+        return getFirstAreaName().compareToIgnoreCase(another.getFirstAreaName());
+    }
 }

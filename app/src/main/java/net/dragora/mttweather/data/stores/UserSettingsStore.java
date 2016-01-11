@@ -48,7 +48,7 @@ public class UserSettingsStore extends SingleItemContentProviderStore<UserSettin
                 .first()
                 .filter(userSettings -> userSettings == null)
                 .subscribe(userSettings -> {
-                    put(new UserSettings(DEFAULT_REPOSITORY_ID));
+                    put(new UserSettings());
                 });
     }
 

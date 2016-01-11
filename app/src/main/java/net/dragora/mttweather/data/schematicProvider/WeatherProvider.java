@@ -10,7 +10,9 @@ import net.simonvt.schematic.annotation.TableEndpoint;
 
 import io.reark.reark.utils.Preconditions;
 
-
+/**
+ * Created by nietzsche on 10/01/16.
+ */
 @ContentProvider(authority = WeatherProvider.AUTHORITY, database = WeatherDatabase.class)
 public class WeatherProvider {
     public static final String AUTHORITY = "net.dragora.mttweather.data.schematicProvider.WeatherProvider";
@@ -27,22 +29,22 @@ public class WeatherProvider {
         return uri;
     }
 
-    @TableEndpoint(table = WeatherDatabase.GITHUB_REPOSITORIES)
-    public static class GitHubRepositories {
+    @TableEndpoint(table = WeatherDatabase.CITY_WEATHERS)
+    public static class CityWeathers {
         @ContentUri(
-                path = WeatherDatabase.GITHUB_REPOSITORIES,
-                type = "vnd.android.cursor.dir/vnd.io.reark.rxgithubapp.repository",
-                defaultSort = JsonIdColumns.ID + " ASC")
-        public static final Uri GITHUB_REPOSITORIES = Uri.parse("content://" + AUTHORITY + "/" + WeatherDatabase.GITHUB_REPOSITORIES);
+                path = WeatherDatabase.CITY_WEATHERS,
+                type = "vnd.android.cursor.dir/vnd.net.dragora.mttweather.cityWeathers",
+                defaultSort = JsonKeyColumns.ID + " ASC")
+        public static final Uri CITY_WHEATERS = Uri.parse("content://" + AUTHORITY + "/" + WeatherDatabase.CITY_WEATHERS);
 
         @InexactContentUri(
-                path = WeatherDatabase.GITHUB_REPOSITORIES + "/*",
-                name = "GITHUB_REPOSITORIES_ID",
-                type = "vnd.android.cursor.item/vnd.io.reark.rxgithubapp.repository",
-                whereColumn = GitHubRepositoryColumns.ID,
+                path = WeatherDatabase.CITY_WEATHERS + "/*",
+                name = "CITY_WEATHERS_ID",
+                type = "vnd.android.cursor.item/vnd.net.dragora.mttweather.cityWeathers",
+                whereColumn = CityWeatherColumns.ID,
                 pathSegment = 1)
-        public static Uri withId(long id) {
-            return buildUri(WeatherDatabase.GITHUB_REPOSITORIES, String.valueOf(id));
+        public static Uri withId(String id) {
+            return buildUri(WeatherDatabase.CITY_WEATHERS, id);
         }
     }
 

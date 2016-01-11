@@ -1,4 +1,4 @@
-package net.dragora.mttweather.ui;
+package net.dragora.mttweather.ui.city_weather;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.widget.FrameLayout;
 
 import net.dragora.mttweather.R;
+import net.dragora.mttweather.ui.BaseActivity;
+import net.dragora.mttweather.ui.city_list.CityListActivity;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -22,8 +25,8 @@ import org.androidannotations.annotations.ViewById;
  * item details are presented side-by-side with a list of items
  * in a {@link CityListActivity}.
  */
-@EActivity(R.layout.city_detail_activity)
-public class CityDetailActivity extends BaseActivity {
+@EActivity(R.layout.city_weather_activity)
+public class CityWeatherActivity extends BaseActivity {
 
     @ViewById
     Toolbar detailToolbar;
@@ -31,11 +34,11 @@ public class CityDetailActivity extends BaseActivity {
     @ViewById
     AppBarLayout appBar;
     @ViewById
-    NestedScrollView cityDetailContainer;
+    FrameLayout cityDetailContainer;
 
 
     @Extra
-    int itemId = -1;
+    String weatherId = "";
     private boolean shouldAddFragment = false;
 
     @AfterViews
@@ -47,17 +50,6 @@ public class CityDetailActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        shouldAddFragment = savedInstanceState == null;
-
-    }
-
-    @AfterInject
-    void afterInject() {
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -68,12 +60,20 @@ public class CityDetailActivity extends BaseActivity {
         // http://developer.android.com/guide/components/fragments.html
         //
         if (shouldAddFragment) {
-            CityDetailFragment fragment = CityDetailFragment_.builder().itemId(itemId).build();
+            CityWeatherFragment fragment = CityWeatherFragment_.builder().weatherId(weatherId).build();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.city_detail_container, fragment)
                     .commit();
         }
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shouldAddFragment = savedInstanceState == null;
+
+    }
+
 
     @OptionsItem(android.R.id.home)
     void home() {

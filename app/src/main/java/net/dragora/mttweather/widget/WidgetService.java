@@ -6,18 +6,13 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.AppWidgetTarget;
-
 import net.dragora.mttweather.MyApplication;
 import net.dragora.mttweather.R;
 import net.dragora.mttweather.data.DataLayer;
-import net.dragora.mttweather.pojo.UserSettings;
 
 import javax.inject.Inject;
 
 import io.reark.reark.utils.Log;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -30,7 +25,7 @@ public class WidgetService extends Service {
     DataLayer.GetUserSettings getUserSettings;
 
     @Inject
-    DataLayer.FetchAndGetGitHubRepository fetchAndGetGitHubRepository;
+    DataLayer.FetchAndGetWeather fetchAndGetGitHubRepository;
 
     private CompositeSubscription subscriptions;
 
@@ -59,10 +54,10 @@ public class WidgetService extends Service {
         appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
         clearSubscriptions();
-        subscriptions.add(
+/*       TODO subscriptions.add(
                 getUserSettings.call()
                         .map(UserSettings::getSelectedRepositoryId)
-                        .switchMap(fetchAndGetGitHubRepository::call)
+                        .switchMap(fetchAndGetWeather::call)
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(repository -> {
@@ -83,7 +78,7 @@ public class WidgetService extends Service {
                                  .into(widgetTarget);
                             appWidgetManager.updateAppWidget(widgetId, remoteViews);
                         })
-        );
+        );*/
     }
 
     private void clearSubscriptions() {
