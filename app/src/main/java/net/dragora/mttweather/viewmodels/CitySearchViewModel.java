@@ -79,7 +79,6 @@ public class CitySearchViewModel extends AbstractViewModel {
     public PublishSubject<UserSettings> getUserSettingsPublishSubject() {
         return userSettingsPublishSubject;
     }
-
     @NonNull
     public Observable<UserSettings> getUserSettings() {
         return userSettings.asObservable();

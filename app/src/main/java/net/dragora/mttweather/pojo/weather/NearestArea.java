@@ -1,13 +1,9 @@
 package net.dragora.mttweather.pojo.weather;
 
 import java.util.ArrayList;
-
 import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
-
 import android.os.Parcel;
 
 

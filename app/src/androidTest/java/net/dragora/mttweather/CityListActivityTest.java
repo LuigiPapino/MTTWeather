@@ -86,7 +86,7 @@ public class CityListActivityTest {
                     .perform(typeText(city));
 
             try {
-                Thread.sleep(3000); // Wait before search to not recevie 429 error code (tto many requests)
+                Thread.sleep(2000); // Wait before search to not receive 429 error code (too many requests)
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -115,10 +115,16 @@ public class CityListActivityTest {
             Assert.assertEquals("Failed to sort cities", adapter.getItems().get(i).getFirstAreaName(), city);
             onView(withText(city))
                     .perform(click());
+            try {
+                Thread.sleep(500); // Wait before search to not receive 429 error code (too many requests)
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             onView(allOf(withText(city), withId(R.id.current_area)))
                     .check(matches(isDisplayed()));
             Espresso.pressBack(); //TODO work only in portrait
         }
+
 
 
     }
@@ -127,15 +133,17 @@ public class CityListActivityTest {
         UltimateRecyclerView recyclerView = (UltimateRecyclerView) Tools.getActivityInstance().findViewById(R.id.ultimate_recycler_view);
         UltimateRecyclerViewAdapterBase<Result, ItemCityView> adapter = (UltimateRecyclerViewAdapterBase<Result, ItemCityView>) recyclerView.getAdapter();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         for (int i = adapter.getAdapterItemCount() - 1; i >= 0; i--) {
+
             String city = adapter.getItems().get(i).getFirstAreaName();
             onView(withId(R.id.ultimate_list))
                     .perform(RecyclerViewActions.actionOnItemAtPosition(i, RecyclerViewClickAction.clickChildViewWithId(R.id.star_button)));
+            try {
+                Thread.sleep(500); //TODO
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             onView(withText(city)).check(doesNotExist());
         }
     }
@@ -144,15 +152,17 @@ public class CityListActivityTest {
         UltimateRecyclerView recyclerView = (UltimateRecyclerView) Tools.getActivityInstance().findViewById(R.id.ultimate_recycler_view);
         UltimateRecyclerViewAdapterBase<Result, ItemCityView> adapter = (UltimateRecyclerViewAdapterBase<Result, ItemCityView>) recyclerView.getAdapter();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         for (int i = adapter.getAdapterItemCount() - 1; i >= 0; i--) {
+
             String city = adapter.getItems().get(i).getFirstAreaName();
             onView(withId(R.id.ultimate_list))
                     .perform(RecyclerViewActions.actionOnItemAtPosition(i, RecyclerViewClickAction.clickChildViewWithId(R.id.star_button)));
+            try {
+                Thread.sleep(500); //TODO
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             onView(withText(city)).check(doesNotExist());
         }
     }

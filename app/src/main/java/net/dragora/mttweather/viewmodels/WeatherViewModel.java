@@ -58,7 +58,6 @@ public class WeatherViewModel extends AbstractViewModel {
 
         networkRequestStatusText.onNext(status);
     }
-
     public void setWeatherId(@NonNull String weatherId) {
         Preconditions.checkNotNull(weatherId, "weatherId cannot be null.");
 

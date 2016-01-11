@@ -44,7 +44,6 @@ public class ForecastView extends CardView {
     TextView toolTipText;
     private Tooltip mTip;
     private Weather weather;
-
     public ForecastView(Context context) {
         super(context);
     }

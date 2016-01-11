@@ -47,7 +47,6 @@ public class HeaderView extends CardView {
     RelativeLayout currentLayout;
     @ViewById
     ProgressBar progressBar;
-
     public HeaderView(Context context) {
         super(context);
     }
